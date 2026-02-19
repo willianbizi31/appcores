@@ -1,20 +1,118 @@
 const mainColors = [
-  { name: "vermelho", value: "#ef4444" },
-  { name: "azul", value: "#3b82f6" },
-  { name: "amarelo", value: "#facc15", text: "#2a2a2a" },
-  { name: "verde", value: "#22c55e" },
-  { name: "laranja", value: "#fb923c" },
-  { name: "roxo", value: "#8b5cf6" },
+  {
+    name: "vermelho",
+    value: "#ef4444",
+    objects: [
+      { emoji: "🍅", label: "Tomate" },
+      { emoji: "🍓", label: "Morango" },
+      { emoji: "🚗", label: "Carro" },
+    ],
+  },
+  {
+    name: "azul",
+    value: "#3b82f6",
+    objects: [
+      { emoji: "🫐", label: "Mirtilo" },
+      { emoji: "🐟", label: "Peixe" },
+      { emoji: "🧢", label: "Boné" },
+    ],
+  },
+  {
+    name: "amarelo",
+    value: "#facc15",
+    text: "#2a2a2a",
+    objects: [
+      { emoji: "🍌", label: "Banana" },
+      { emoji: "🌽", label: "Milho" },
+      { emoji: "⭐", label: "Estrela" },
+    ],
+  },
+  {
+    name: "verde",
+    value: "#22c55e",
+    objects: [
+      { emoji: "🥦", label: "Brócolis" },
+      { emoji: "🥝", label: "Kiwi" },
+      { emoji: "🐢", label: "Tartaruga" },
+    ],
+  },
+  {
+    name: "laranja",
+    value: "#fb923c",
+    objects: [
+      { emoji: "🍊", label: "Laranja" },
+      { emoji: "🥕", label: "Cenoura" },
+      { emoji: "🏀", label: "Bola" },
+    ],
+  },
+  {
+    name: "roxo",
+    value: "#8b5cf6",
+    objects: [
+      { emoji: "🍇", label: "Uvas" },
+      { emoji: "☂️", label: "Guarda-chuva" },
+      { emoji: "🧃", label: "Suco de uva" },
+    ],
+  },
 ];
 
 const allColors = [
   ...mainColors,
-  { name: "rosa", value: "#f472b6" },
-  { name: "marrom", value: "#92400e" },
-  { name: "preto", value: "#111827" },
-  { name: "branco", value: "#f8fafc", text: "#111827" },
-  { name: "cinza", value: "#6b7280" },
-  { name: "turquesa", value: "#14b8a6" },
+  {
+    name: "rosa",
+    value: "#f472b6",
+    objects: [
+      { emoji: "🌸", label: "Flor" },
+      { emoji: "🦩", label: "Flamingo" },
+      { emoji: "🍬", label: "Doce" },
+    ],
+  },
+  {
+    name: "marrom",
+    value: "#92400e",
+    objects: [
+      { emoji: "🥥", label: "Coco" },
+      { emoji: "🐻", label: "Urso" },
+      { emoji: "🍫", label: "Chocolate" },
+    ],
+  },
+  {
+    name: "preto",
+    value: "#111827",
+    objects: [
+      { emoji: "🫒", label: "Azeitona" },
+      { emoji: "🐈", label: "Gato" },
+      { emoji: "🎩", label: "Chapéu" },
+    ],
+  },
+  {
+    name: "branco",
+    value: "#f8fafc",
+    text: "#111827",
+    objects: [
+      { emoji: "🥛", label: "Leite" },
+      { emoji: "☁️", label: "Nuvem" },
+      { emoji: "⚽", label: "Bola" },
+    ],
+  },
+  {
+    name: "cinza",
+    value: "#6b7280",
+    objects: [
+      { emoji: "🪨", label: "Pedra" },
+      { emoji: "🐘", label: "Elefante" },
+      { emoji: "🛴", label: "Patinete" },
+    ],
+  },
+  {
+    name: "turquesa",
+    value: "#14b8a6",
+    objects: [
+      { emoji: "🧜", label: "Sereia" },
+      { emoji: "🌊", label: "Mar" },
+      { emoji: "🦋", label: "Borboleta" },
+    ],
+  },
 ];
 
 const targetText = document.getElementById("target-text");
@@ -26,24 +124,78 @@ const speakColorBtn = document.getElementById("speak-color");
 
 let targetColor = null;
 
+function pickRandomObject(color, previousIndex = -1) {
+  const options = color.objects || [];
+  if (options.length === 0) {
+    return { item: { emoji: "🎨", label: `Objeto ${color.name}` }, index: -1 };
+  }
+
+  if (options.length === 1) {
+    return { item: options[0], index: 0 };
+  }
+
+  let index = Math.floor(Math.random() * options.length);
+  while (index === previousIndex) {
+    index = Math.floor(Math.random() * options.length);
+  }
+
+  return { item: options[index], index };
+}
+
 function createCard(color, isMain) {
   const button = document.createElement("button");
   button.className = "color-card";
   button.type = "button";
-  button.style.backgroundColor = color.value;
-  button.style.color = color.text || "#fff";
-  button.textContent = color.name;
   button.setAttribute("aria-label", `Cor ${color.name}`);
 
+  let lastObjectIndex = -1;
+
+  const inner = document.createElement("span");
+  inner.className = "color-card-inner";
+
+  const front = document.createElement("span");
+  front.className = "card-face card-front";
+  front.style.backgroundColor = color.value;
+  front.style.color = color.text || "#fff";
+  front.textContent = color.name;
+
+  const back = document.createElement("span");
+  back.className = "card-face card-back";
+  back.style.backgroundColor = color.value;
+  back.style.color = color.text || "#fff";
+
+  const backEmoji = document.createElement("span");
+  backEmoji.className = "object-emoji";
+
+  const backLabel = document.createElement("span");
+  backLabel.className = "object-label";
+
+  back.append(backEmoji, backLabel);
+  inner.append(front, back);
+  button.appendChild(inner);
+
+  function updateCardObject() {
+    const next = pickRandomObject(color, lastObjectIndex);
+    lastObjectIndex = next.index;
+    backEmoji.textContent = next.item.emoji;
+    backLabel.textContent = next.item.label;
+    return next.item;
+  }
+
+  updateCardObject();
+
   button.addEventListener("click", () => {
+    const selectedObject = updateCardObject();
+    button.classList.toggle("is-flipped");
+
     if (isMain) {
-      checkAnswer(color);
+      checkAnswer(color, selectedObject);
       return;
     }
 
     feedback.className = "feedback";
-    feedback.textContent = `Essa é a cor ${color.name}.`;
-    say(`Essa é a cor ${color.name}`);
+    feedback.textContent = `Essa é a cor ${color.name}. ${selectedObject.label}.`;
+    say(`Essa é a cor ${color.name}. ${selectedObject.label}`);
   });
 
   return button;
@@ -56,7 +208,7 @@ function pickTargetColor() {
   feedback.textContent = "";
 }
 
-function checkAnswer(selectedColor) {
+function checkAnswer(selectedColor, selectedObject) {
   if (!targetColor) {
     pickTargetColor();
     return;
@@ -66,8 +218,8 @@ function checkAnswer(selectedColor) {
   feedback.className = `feedback ${isCorrect ? "ok" : "error"}`;
 
   if (isCorrect) {
-    feedback.textContent = `🎉 Muito bem! Você acertou: ${selectedColor.name}.`;
-    say(`Muito bem! É a cor ${selectedColor.name}`);
+    feedback.textContent = `🎉 Muito bem! Você acertou: ${selectedColor.name}. ${selectedObject.label}.`;
+    say(`Muito bem! É a cor ${selectedColor.name}. Objeto: ${selectedObject.label}`);
     setTimeout(pickTargetColor, 1200);
     return;
   }
