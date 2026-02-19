@@ -1,20 +1,20 @@
 const mainColors = [
-  { name: "vermelho", value: "#ef4444" },
-  { name: "azul", value: "#3b82f6" },
-  { name: "amarelo", value: "#facc15", text: "#2a2a2a" },
-  { name: "verde", value: "#22c55e" },
-  { name: "laranja", value: "#fb923c" },
-  { name: "roxo", value: "#8b5cf6" },
+  { name: "vermelho", value: "#ef4444", object: "🍅 Tomate" },
+  { name: "azul", value: "#3b82f6", object: "🫐 Mirtilo" },
+  { name: "amarelo", value: "#facc15", text: "#2a2a2a", object: "🍌 Banana" },
+  { name: "verde", value: "#22c55e", object: "🥦 Brócolis" },
+  { name: "laranja", value: "#fb923c", object: "🍊 Laranja" },
+  { name: "roxo", value: "#8b5cf6", object: "🍇 Uvas" },
 ];
 
 const allColors = [
   ...mainColors,
-  { name: "rosa", value: "#f472b6" },
-  { name: "marrom", value: "#92400e" },
-  { name: "preto", value: "#111827" },
-  { name: "branco", value: "#f8fafc", text: "#111827" },
-  { name: "cinza", value: "#6b7280" },
-  { name: "turquesa", value: "#14b8a6" },
+  { name: "rosa", value: "#f472b6", object: "🌸 Flor" },
+  { name: "marrom", value: "#92400e", object: "🥥 Coco" },
+  { name: "preto", value: "#111827", object: "🫒 Azeitona" },
+  { name: "branco", value: "#f8fafc", text: "#111827", object: "🥛 Leite" },
+  { name: "cinza", value: "#6b7280", object: "🪨 Pedra" },
+  { name: "turquesa", value: "#14b8a6", object: "🧜 Sereia" },
 ];
 
 const targetText = document.getElementById("target-text");
@@ -30,20 +30,37 @@ function createCard(color, isMain) {
   const button = document.createElement("button");
   button.className = "color-card";
   button.type = "button";
-  button.style.backgroundColor = color.value;
-  button.style.color = color.text || "#fff";
-  button.textContent = color.name;
   button.setAttribute("aria-label", `Cor ${color.name}`);
 
+  const inner = document.createElement("span");
+  inner.className = "color-card-inner";
+
+  const front = document.createElement("span");
+  front.className = "card-face card-front";
+  front.style.backgroundColor = color.value;
+  front.style.color = color.text || "#fff";
+  front.textContent = color.name;
+
+  const back = document.createElement("span");
+  back.className = "card-face card-back";
+  back.style.backgroundColor = color.value;
+  back.style.color = color.text || "#fff";
+  back.textContent = color.object || `Objeto da cor ${color.name}`;
+
+  inner.append(front, back);
+  button.appendChild(inner);
+
   button.addEventListener("click", () => {
+    button.classList.toggle("is-flipped");
+
     if (isMain) {
       checkAnswer(color);
       return;
     }
 
     feedback.className = "feedback";
-    feedback.textContent = `Essa é a cor ${color.name}.`;
-    say(`Essa é a cor ${color.name}`);
+    feedback.textContent = `Essa é a cor ${color.name}. ${color.object}`;
+    say(`Essa é a cor ${color.name}. ${color.object}`);
   });
 
   return button;
@@ -66,8 +83,8 @@ function checkAnswer(selectedColor) {
   feedback.className = `feedback ${isCorrect ? "ok" : "error"}`;
 
   if (isCorrect) {
-    feedback.textContent = `🎉 Muito bem! Você acertou: ${selectedColor.name}.`;
-    say(`Muito bem! É a cor ${selectedColor.name}`);
+    feedback.textContent = `🎉 Muito bem! Você acertou: ${selectedColor.name}. ${selectedColor.object}`;
+    say(`Muito bem! É a cor ${selectedColor.name}. ${selectedColor.object}`);
     setTimeout(pickTargetColor, 1200);
     return;
   }
