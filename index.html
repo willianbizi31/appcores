@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cores com a Luna</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="app">
+      <header class="hero">
+        <h1>🌈 Cores com a Luna</h1>
+        <p>
+          Um joguinho simples para aprender as <strong>cores primárias</strong>:
+          vermelho, azul e amarelo.
+        </p>
+      </header>
+
+      <section class="game" aria-label="Jogo das cores">
+        <h2>🎯 Toque na cor pedida</h2>
+        <p id="target-text" class="target-text">Carregando...</p>
+        <div class="cards" id="primary-cards" role="group" aria-label="Cores primárias"></div>
+
+        <div class="actions">
+          <button id="new-round" class="btn">Nova rodada</button>
+          <button id="speak-color" class="btn btn-secondary">Ouvir a cor</button>
+        </div>
+
+        <p id="feedback" class="feedback" aria-live="polite"></p>
+      </section>
+
+      <section class="palette" aria-label="Outras cores">
+        <h2>✨ Mais cores para explorar</h2>
+        <div class="cards" id="extra-cards" role="group" aria-label="Cores extras"></div>
+      </section>
+    </main>
+
+    <script src="script.js"></script>
+  </body>
+</html>
