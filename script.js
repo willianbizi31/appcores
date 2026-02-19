@@ -1,25 +1,32 @@
-const primaryColors = [
+const mainColors = [
   { name: "vermelho", value: "#ef4444" },
   { name: "azul", value: "#3b82f6" },
   { name: "amarelo", value: "#facc15", text: "#2a2a2a" },
+  { name: "verde", value: "#22c55e" },
+  { name: "laranja", value: "#fb923c" },
+  { name: "roxo", value: "#8b5cf6" },
 ];
 
-const extraColors = [
-  { name: "verde", value: "#22c55e" },
-  { name: "roxo", value: "#8b5cf6" },
-  { name: "laranja", value: "#fb923c" },
+const allColors = [
+  ...mainColors,
+  { name: "rosa", value: "#f472b6" },
+  { name: "marrom", value: "#92400e" },
+  { name: "preto", value: "#111827" },
+  { name: "branco", value: "#f8fafc", text: "#111827" },
+  { name: "cinza", value: "#6b7280" },
+  { name: "turquesa", value: "#14b8a6" },
 ];
 
 const targetText = document.getElementById("target-text");
 const feedback = document.getElementById("feedback");
-const primaryCards = document.getElementById("primary-cards");
-const extraCards = document.getElementById("extra-cards");
+const mainCards = document.getElementById("main-cards");
+const allCards = document.getElementById("all-cards");
 const newRoundBtn = document.getElementById("new-round");
 const speakColorBtn = document.getElementById("speak-color");
 
 let targetColor = null;
 
-function createCard(color, isPrimary) {
+function createCard(color, isMain) {
   const button = document.createElement("button");
   button.className = "color-card";
   button.type = "button";
@@ -28,21 +35,22 @@ function createCard(color, isPrimary) {
   button.textContent = color.name;
   button.setAttribute("aria-label", `Cor ${color.name}`);
 
-  if (isPrimary) {
-    button.addEventListener("click", () => checkAnswer(color));
-  } else {
-    button.addEventListener("click", () => {
-      feedback.className = "feedback";
-      feedback.textContent = `Essa é a cor ${color.name}.`;
-      say(`Essa é a cor ${color.name}`);
-    });
-  }
+  button.addEventListener("click", () => {
+    if (isMain) {
+      checkAnswer(color);
+      return;
+    }
+
+    feedback.className = "feedback";
+    feedback.textContent = `Essa é a cor ${color.name}.`;
+    say(`Essa é a cor ${color.name}`);
+  });
 
   return button;
 }
 
 function pickTargetColor() {
-  targetColor = primaryColors[Math.floor(Math.random() * primaryColors.length)];
+  targetColor = mainColors[Math.floor(Math.random() * mainColors.length)];
   targetText.innerHTML = `Toque em: <span style="color:${targetColor.value}">${targetColor.name.toUpperCase()}</span>`;
   feedback.className = "feedback";
   feedback.textContent = "";
@@ -81,8 +89,8 @@ function say(text) {
 }
 
 function init() {
-  primaryColors.forEach((color) => primaryCards.appendChild(createCard(color, true)));
-  extraColors.forEach((color) => extraCards.appendChild(createCard(color, false)));
+  mainColors.forEach((color) => mainCards.appendChild(createCard(color, true)));
+  allColors.forEach((color) => allCards.appendChild(createCard(color, false)));
 
   newRoundBtn.addEventListener("click", pickTargetColor);
   speakColorBtn.addEventListener("click", () => {
