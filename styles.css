@@ -60,15 +60,42 @@ p {
   border: 3px solid transparent;
   border-radius: 16px;
   min-height: 120px;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+  perspective: 700px;
+}
+
+.color-card-inner {
+  position: relative;
+  display: block;
+  width: 100%;
+  min-height: 120px;
+  border-radius: 16px;
+  transform-style: preserve-3d;
+  transition: transform 0.5s;
+}
+
+.color-card.is-flipped .color-card-inner {
+  transform: rotateY(180deg);
+}
+
+.card-face {
+  position: absolute;
+  inset: 0;
+  border-radius: 16px;
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   justify-content: center;
   padding: 0.6rem;
   font-size: 1.15rem;
   font-weight: 800;
-  color: #fff;
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.35);
-  cursor: pointer;
+  backface-visibility: hidden;
+}
+
+.card-back {
+  transform: rotateY(180deg);
 }
 
 .color-card:focus-visible {
